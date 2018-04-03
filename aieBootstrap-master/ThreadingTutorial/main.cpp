@@ -1,9 +1,9 @@
-#include "ThreadingTutorialApp.h"
+#include "Tutorials.h"
 
 int main() {
 	
 	// allocation
-	auto app = new ThreadingTutorialApp();
+	auto app = new Tutorials();
 
 	// initialise and loop
 	app->run("AIE", 1280, 720, false);
