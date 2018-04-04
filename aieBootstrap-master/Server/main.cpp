@@ -4,8 +4,9 @@
 #include <RakPeerInterface.h>
 #include <MessageIdentifiers.h>
 #include <BitStream.h>
+#include "GameMessages.h"
 
-//void handleNetworkMessages(RakNet::RakPeerInterface* pPeerInterface);
+void handleNetworkMessages(RakNet::RakPeerInterface* pPeerInterface);
 
 int main()
 {
@@ -26,6 +27,7 @@ int main()
 	pPeerInterface->SetMaximumIncomingConnections(32);
 
 	handleNetworkMessages(pPeerInterface);
+	sendClientPing(pPeerInterface);
 
 	return 0;
 }
