@@ -5,6 +5,8 @@
 #include <MessageIdentifiers.h>
 #include <BitStream.h>
 
+//void handleNetworkMessages(RakNet::RakPeerInterface* pPeerInterface);
+
 int main()
 {
 	const unsigned short PORT = 5456;
