@@ -31,6 +31,9 @@ bool Client::startup() {
 										  getWindowWidth() / (float)getWindowHeight(),
 										  0.1f, 1000.f);
 
+	m_myGameObject.position = glm::vec3(0, 0, 0);
+	m_myGameObject.colour = glm::vec4(1, 0, 0, 1);
+
 	handleNetworkConnection();
 
 	return true;
@@ -48,11 +51,32 @@ void Client::update(float deltaTime) {
 
 	// wipe the gizmos clean for this frame
 	Gizmos::clear();
-
+	Gizmos::addSphere(m_myGameObject.position, 1.f, 32, 32, m_myGameObject.colour);
 	handleNetworkMessages();
 
 	// quit if we press escape
 	aie::Input* input = aie::Input::getInstance();
+
+	if (input->isKeyDown(aie::INPUT_KEY_LEFT))
+	{
+		m_myGameObject.position.x -= 10.f * deltaTime;
+		m_myGameObject.position.z += 10.f * deltaTime;
+	}
+	if (input->isKeyDown(aie::INPUT_KEY_RIGHT))
+	{
+		m_myGameObject.position.x += 10.f * deltaTime;
+		m_myGameObject.position.z -= 10.f * deltaTime;
+	}
+	if (input->isKeyDown(aie::INPUT_KEY_DOWN))
+	{
+		m_myGameObject.position.z += 10.f * deltaTime;
+		m_myGameObject.position.x += 10.f * deltaTime;
+	}
+	if (input->isKeyDown(aie::INPUT_KEY_UP))
+	{
+		m_myGameObject.position.z -= 10.f * deltaTime;
+		m_myGameObject.position.x -= 10.f * deltaTime;
+	}
 
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
 		quit();
@@ -127,7 +151,6 @@ void Client::handleNetworkMessages()
 		case ID_CONNECTION_LOST:
 			cout << "Connection lost.\n";
 			break;
-
 		default:
 			cout << "Received a message with an unkown id: " << packet->data[0];
 			break;

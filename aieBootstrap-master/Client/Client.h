@@ -7,6 +7,12 @@
 #include <MessageIdentifiers.h>
 #include <BitStream.h>
 
+struct GameObject
+{
+	glm::vec3 position;
+	glm::vec4 colour;
+};
+
 class Client : public aie::Application {
 public:
 
@@ -28,6 +34,7 @@ public:
 
 protected:
 
+	GameObject	m_myGameObject;
 	glm::mat4	m_viewMatrix;
 	glm::mat4	m_projectionMatrix;
 

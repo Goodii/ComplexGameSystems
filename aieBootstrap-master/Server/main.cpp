@@ -6,6 +6,9 @@
 #include <BitStream.h>
 #include "GameMessages.h"
 
+#include <chrono>
+#include <thread>
+
 void handleNetworkMessages(RakNet::RakPeerInterface* pPeerInterface);
 
 int main()
@@ -28,6 +31,9 @@ int main()
 
 	handleNetworkMessages(pPeerInterface);
 	sendClientPing(pPeerInterface);
+
+	//startup a thread to ping clients every second
+	std::thread pingThread(sendClientPing, pPeerInterface);
 
 	return 0;
 }
@@ -52,6 +58,19 @@ void handleNetworkMessages(RakNet::RakPeerInterface* pPeerInterface)
 				break;
 			case ID_CONNECTION_LOST:
 				std::cout << "A client has lost connection.\n";
+				break;
+			case ID_SERVER_TEXT_MESSAGE:
+			{
+				RakNet::BitStream bsIn(packet->data, packet->length, false);
+				bsIn.IgnoreBytes(sizeof(RakNet::MessageID));
+
+				RakNet::RakString str;
+				bsIn.Read(str);
+				std::cout << str.C_String() << std::endl;
+				break;
+			}
+			case ID_SERVER_SET_CLIENT_ID:
+				onSetClientIDPacket(packet);
 				break;
 			default:
 				std::cout << "Received a message with an unkown id: " << packet->data[0];
