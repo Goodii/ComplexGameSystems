@@ -9,7 +9,10 @@
 #include <chrono>
 #include <thread>
 
+int nextClientID = 1;
+
 void handleNetworkMessages(RakNet::RakPeerInterface* pPeerInterface);
+void sendNewClientID(RakNet::RakPeerInterface*, RakNet::SystemAddress&);
 
 int main()
 {
@@ -52,6 +55,7 @@ void handleNetworkMessages(RakNet::RakPeerInterface* pPeerInterface)
 			{
 			case ID_NEW_INCOMING_CONNECTION:
 				std::cout << "A new connection is incoming.\n";
+				sendNewClientID(pPeerInterface, packet->systemAddress);
 				break;
 			case ID_DISCONNECTION_NOTIFICATION:
 				std::cout << "A client has disconnected.\n";
@@ -69,13 +73,20 @@ void handleNetworkMessages(RakNet::RakPeerInterface* pPeerInterface)
 				std::cout << str.C_String() << std::endl;
 				break;
 			}
-			case ID_SERVER_SET_CLIENT_ID:
-				onSetClientIDPacket(packet);
-				break;
 			default:
-				std::cout << "Received a message with an unkown id: " << packet->data[0];
+				std::cout << "Received a message with an unkown id: " << packet->data[0] << std::endl;
 				break;
 			}
 		}
 	}
+}
+
+void sendNewClientID(RakNet::RakPeerInterface* pPeerInterface, RakNet::SystemAddress& address)
+{
+	RakNet::BitStream bs;
+	bs.Write((RakNet::MessageID)GameMessages::ID_SERVER_SET_CLIENT_ID);
+	bs.Write(nextClientID);
+	nextClientID++;
+
+	pPeerInterface->Send(&bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, address, false);
 }

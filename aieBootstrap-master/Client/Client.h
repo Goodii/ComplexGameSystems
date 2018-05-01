@@ -32,11 +32,17 @@ public:
 	//handle incoming packets
 	void handleNetworkMessages();
 
+	void onSetClientIDPacket(RakNet::Packet*);
+	void sendClientGameObject();
+	void onReceivedClientDataPacket(RakNet::Packet*);
+
 protected:
 
 	GameObject	m_myGameObject;
 	glm::mat4	m_viewMatrix;
 	glm::mat4	m_projectionMatrix;
+
+	int m_clientID;
 
 	RakNet::RakPeerInterface* m_pPeerInterface;
 
