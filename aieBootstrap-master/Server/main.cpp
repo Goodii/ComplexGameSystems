@@ -18,7 +18,7 @@ int main()
 {
 	const unsigned short PORT = 5456;
 	RakNet::RakPeerInterface* pPeerInterface = nullptr;
-
+	
 	//startup the server, and stat it listening to clients
 	std::cout << "Starting up the server...\n";
 
@@ -54,7 +54,7 @@ void handleNetworkMessages(RakNet::RakPeerInterface* pPeerInterface)
 			switch (packet->data[0])
 			{
 			case ID_NEW_INCOMING_CONNECTION:
-				std::cout << "A new connection is incoming.\n";
+				std::cout << "A new connection is incoming. Setting ID to: " << nextClientID << std::endl;
 				sendNewClientID(pPeerInterface, packet->systemAddress);
 				break;
 			case ID_DISCONNECTION_NOTIFICATION:
@@ -71,6 +71,12 @@ void handleNetworkMessages(RakNet::RakPeerInterface* pPeerInterface)
 				RakNet::RakString str;
 				bsIn.Read(str);
 				std::cout << str.C_String() << std::endl;
+				break;
+			}
+			case ID_CLIENT_CLIENT_DATA:
+			{
+				RakNet::BitStream bs(packet->data, packet->length, false);
+				pPeerInterface->Send(&bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, packet->systemAddress, true);
 				break;
 			}
 			default:

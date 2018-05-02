@@ -6,6 +6,7 @@
 #include <RakPeerInterface.h>
 #include <MessageIdentifiers.h>
 #include <BitStream.h>
+#include <unordered_map>
 
 struct GameObject
 {
@@ -43,6 +44,8 @@ protected:
 	glm::mat4	m_projectionMatrix;
 
 	int m_clientID;
+
+	std::unordered_map<int, GameObject> m_otherClientGameObjects;
 
 	RakNet::RakPeerInterface* m_pPeerInterface;
 

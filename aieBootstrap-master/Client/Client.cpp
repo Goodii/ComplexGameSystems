@@ -57,6 +57,12 @@ void Client::update(float deltaTime) {
 	Gizmos::addSphere(m_myGameObject.position, 1.f, 32, 32, m_myGameObject.colour);
 	handleNetworkMessages();
 
+	for (auto& otherClient : m_otherClientGameObjects)
+	{
+		Gizmos::addSphere(otherClient.second.position, 1.f,
+			32, 32, otherClient.second.colour);
+	}
+
 	// quit if we press escape
 	aie::Input* input = aie::Input::getInstance();
 
@@ -210,6 +216,8 @@ void Client::onReceivedClientDataPacket(RakNet::Packet* packet)
 	{
 		GameObject clientData;
 		bsIn.Read((char*)&clientData, sizeof(GameObject));
+
+		m_otherClientGameObjects[clientID] = clientData;
 
 		//output GameObject information to console
 		std::cout << "Client " << clientID <<
